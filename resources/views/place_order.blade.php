@@ -51,12 +51,13 @@
         </div>
         <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Shipping address</h4>
-            <form method="POST" class="needs-validation" novalidate>
+            <form method="POST" action="{{url('confirm_place_order/'.$total)}}" class="needs-validation" novalidate>
                
+            @csrf
 
                 <div class="mb-3">
                     <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" placeholder="1234 Main St"
+                    <input type="text" class="form-control" name="address" id="address" placeholder="1234 Main St"
                            value="93 B, New Eskaton Road" required>
                     <div class="invalid-feedback">
                         Please enter your shipping address.
@@ -100,11 +101,9 @@
                 <hr class="mb-4">
               
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" id="sslczPayBtn"
-                        token="if you have any token validation"
-                        postdata="your javascript arrays or objects which requires in backend"
-                        order="If you already have the transaction generated for current order"
-                        endpoint="{{ url('/pay-via-ajax') }}"> Pay Now
+                <button class="btn btn-primary" 
+                     
+                        endpoint="{{ url('/confirm_place_order') }}"> Confirm order
                 </button>
             </form>
         </div>
@@ -112,7 +111,6 @@
 
    
 </div>
-
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -132,8 +130,6 @@
     obj.cus_email = $('#email').val();
     obj.cus_addr1 = $('#address').val();
     obj.amount = $('#total_amount').val();
-
-   
 
     $('#sslczPayBtn').prop('postdata', obj);
 

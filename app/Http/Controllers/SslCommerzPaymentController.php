@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use App\Library\SslCommerz\SslCommerzNotification;
+use Auth;
+use Session;
 
 class SslCommerzPaymentController extends Controller
 {
@@ -25,15 +27,29 @@ class SslCommerzPaymentController extends Controller
         # Let's say, your oder transaction informations are saving in a table called "orders"
         # In "orders" table, order unique identity is "transaction_id". "status" field contain status of the transaction, "amount" is the order amount to be paid and "currency" is for storing Site Currency which will be checked with paid currency.
 
+
+        $total=Session::get('total');
+
+
+
+        $invoice=Session::get('invoice');
+
+
         $post_data = array();
-        $post_data['total_amount'] = '10'; # You cant not pay less than 10
+        $post_data['total_amount'] = $total; # You cant not pay less than 10
         $post_data['currency'] = "BDT";
-        $post_data['tran_id'] = uniqid(); // tran_id must be unique
+        $post_data['tran_id'] = $invoice; // tran_id must be unique
+
+
+        Session::put('address',$request->address);
+
+        
+
 
         # CUSTOMER INFORMATION
         $post_data['cus_name'] = 'Customer Name';
         $post_data['cus_email'] = 'customer@mail.com';
-        $post_data['cus_add1'] = 'Customer Address';
+        $post_data['cus_add1'] = '';
         $post_data['cus_add2'] = "";
         $post_data['cus_city'] = "";
         $post_data['cus_state'] = "";
@@ -95,15 +111,27 @@ class SslCommerzPaymentController extends Controller
         # Lets your oder trnsaction informations are saving in a table called "orders"
         # In orders table order uniq identity is "transaction_id","status" field contain status of the transaction, "amount" is the order amount to be paid and "currency" is for storing Site Currency which will be checked with paid currency.
 
+        $total=Session::get('total');
+
+
+        $invoice = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 8);
+
+
+        
+        Session::put('invoice',$invoice);
+
+
         $post_data = array();
-        $post_data['total_amount'] = '10'; # You cant not pay less than 10
+        $post_data['total_amount'] = $total; # You cant not pay less than 10
         $post_data['currency'] = "BDT";
-        $post_data['tran_id'] = uniqid(); // tran_id must be unique
+        $post_data['tran_id'] = $invoice; // tran_id must be unique
+
+        Session::put('address',$request->address);
 
         # CUSTOMER INFORMATION
         $post_data['cus_name'] = 'Customer Name';
         $post_data['cus_email'] = 'customer@mail.com';
-        $post_data['cus_add1'] = 'Customer Address';
+        $post_data['cus_add1'] = $request->address;
         $post_data['cus_add2'] = "";
         $post_data['cus_city'] = "";
         $post_data['cus_state'] = "";
@@ -144,7 +172,7 @@ class SslCommerzPaymentController extends Controller
                 'amount' => $post_data['total_amount'],
                 'status' => 'Pending',
                 'address' => $post_data['cus_add1'],
-                'transaction_id' => $post_data['tran_id'],
+                'transaction_id' => $invoice,
                 'currency' => $post_data['currency']
             ]);
 
@@ -161,7 +189,60 @@ class SslCommerzPaymentController extends Controller
 
     public function success(Request $request)
     {
-        echo "Transaction is Successful";
+       // echo "Transaction is Successful";
+
+
+
+       $data=array();
+
+
+
+       $invoice=Session::get('invoice');
+
+       /*
+       $order_list = DB::table('carts')->where('product_order','yes')->get();
+
+
+       foreach($order_list as $order)
+       {
+
+           while($order->invoice_no != $invoice)
+           {
+
+               $invoice = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 8);
+
+
+           }
+
+
+       }
+       */
+       //return $invoice;
+       
+       
+       $data['shipping_address']=Session::get('address');
+       $data['product_order']="yes";
+       $data['invoice_no']=$invoice;
+       $data['pay_method']="Online Payment";
+       $data['delivery_time']="3 hours";
+       $data['purchase_date']=date("Y-m-d");
+
+
+     
+
+
+       $carts = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->update($data);
+   
+       $details = [
+           'title' => 'Mail from RMS Admin',
+           'body' => 'Your order have been Placed Successfully.Your order Invoice no - '.$invoice. 'ok',
+       ];
+      
+       \Mail::to(Auth::user()->email)->send(new \App\Mail\PaymentMail($details));
+       
+        return view ('payConfirm');
+
+
 
         $tran_id = $request->input('tran_id');
         $amount = $request->input('amount');
@@ -187,7 +268,7 @@ class SslCommerzPaymentController extends Controller
                     ->where('transaction_id', $tran_id)
                     ->update(['status' => 'Processing']);
 
-                echo "<br >Transaction is successfully Completed";
+               // echo "<br >Transaction is successfully Completed";
             } else {
                 /*
                 That means IPN did not work or IPN URL was not set in your merchant panel and Transation validation failed.
@@ -202,7 +283,7 @@ class SslCommerzPaymentController extends Controller
             /*
              That means through IPN Order status already updated. Now you can just show the customer that transaction is completed. No need to udate database.
              */
-            echo "Transaction is successfully Completed";
+           // echo "Transaction is successfully Completed";
         } else {
             #That means something wrong happened. You can redirect customer to your product page.
             echo "Invalid Transaction";
@@ -213,6 +294,10 @@ class SslCommerzPaymentController extends Controller
 
     public function fail(Request $request)
     {
+
+       
+        return view('failurepay');
+
         $tran_id = $request->input('tran_id');
 
         $order_detials = DB::table('orders')
@@ -234,6 +319,9 @@ class SslCommerzPaymentController extends Controller
 
     public function cancel(Request $request)
     {
+
+        return view('failurepay');
+
         $tran_id = $request->input('tran_id');
 
         $order_detials = DB::table('orders')

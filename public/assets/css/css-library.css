@@ -898,7 +898,7 @@ menu
 .card {
   margin: 0 auto;
   max-width: 100%;
-  min-height: 400px;
+  min-height: 430px;
   overflow: hidden;
   background-size: cover;
   background-repeat: no-repeat;
@@ -934,7 +934,7 @@ menu
 
 .card:hover .info,
 .card:hover .info:before {
-  transform: translateY(200px) translateZ(0);
+  transform: translateY(110px) translateZ(0);
 }
 
 .title {
@@ -962,6 +962,8 @@ menu
   text-align: center;
   line-height: 70px;
 }
+
+
 
 #menu .card .main-text-button {
   margin-left: 30px;
@@ -1427,6 +1429,21 @@ offers
   margin-left: 15px;
 }
 
+
+#menu .price h4 {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background-color: #4b3837;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 3px;
+  text-align: center;
+  margin-left: 170px ;
+  line-height: 70px;
+}
+
 #offers .tabs-content .price h6 {
   position: absolute;
   top: 15px;
@@ -1434,6 +1451,22 @@ offers
   width: 70px;
   height: 70px;
   background-color: #fb5849;
+  display: inline-block;
+  text-align: center;
+  line-height: 70px;
+  border-radius: 3px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+#offers .tabs-content .price h4 {
+  position: absolute;
+  top: 15px;
+  right: 0;
+  width: 70px;
+  height: 70px;
+  background-color: #1a1111;
   display: inline-block;
   text-align: center;
   line-height: 70px;

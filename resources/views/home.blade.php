@@ -56,19 +56,20 @@
                 <div class="col-lg-6 col-md-6 col-xs-12">
                     <div class="left-text-content">
                         <div class="section-heading">
+                        @foreach($about_us as $a_us)
                             <h6>About Us</h6>
-                            <h2>We Leave A Delicious Memory For You</h2>
+                            <h2>{{  $a_us->title  }}</h2>
                         </div>
-                        <p>Midway Cafe is one of the best <a href="https://templatemo.com/tag/restaurant" target="_blank" rel="sponsored">restaurant HTML templates</a> with Bootstrap v4.5.2 CSS framework. You can download and feel free to use this website template layout for your restaurant business. You are allowed to use this template for commercial purposes. <br><br>You are NOT allowed to redistribute the template ZIP file on any template donwnload website. Please contact us for more information.</p>
+                        <p>{{  $a_us->description  }}</p>
                         <div class="row">
                             <div class="col-4">
-                                <img src="{{ asset('assets/images/about-thumb-01.jpg')}}" alt="">
+                                <img src="{{ asset('assets/images/'.$a_us->image1)}}" alt="">
                             </div>
                             <div class="col-4">
-                                <img src="{{ asset('assets/images/about-thumb-02.jpg')}}" alt="">
+                                <img src="{{ asset('assets/images/'.$a_us->image2)}}" alt="">
                             </div>
                             <div class="col-4">
-                                <img src="{{ asset('assets/images/about-thumb-03.jpg')}}" alt="">
+                                <img src="{{ asset('assets/images/'.$a_us->image3)}}" alt="">
                             </div>
                         </div>
                     </div>
@@ -76,8 +77,10 @@
                 <div class="col-lg-6 col-md-6 col-xs-12">
                     <div class="right-content">
                         <div class="thumb">
-                            <a rel="nofollow" href="https://www.youtube.com/watch?v=PSPif8GESyk"><i class="fa fa-play"></i></a>
-                            <img src="{{ asset('assets/images/about-video-bg.jpg')}}" alt="">
+                            <a rel="nofollow" href="{{  $a_us->youtube_link    }}" target="_blank"> <i class="fa fa-play"></i></a>
+                            <img src="{{ asset('assets/images/'.$a_us->vd_image)}}" alt="">
+
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -85,6 +88,504 @@
         </div>
     </section>
     <!-- ***** About Area Ends ***** -->
+
+     <!-- ***** Menu Area Starts ***** -->
+     <section class="section" id="offers">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 offset-lg-4 text-center">
+                    <div class="section-heading">
+                        <h6>Midway Week</h6>
+                        <h2>This Week’s Special Meal Offers</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row" id="tabs">
+                        <div class="col-lg-12">
+                            <div class="heading-tabs">
+                                <div class="row">
+                                    <div class="col-lg-6 offset-lg-3">
+                                        <ul>
+                                  
+                                          <li><a href='#tabs-1'><img src="{{ asset('assets/images/tab-icon-01.png')}}" alt="">Breakfast</a></li>
+                                          <li><a href='#tabs-2'><img src="{{ asset('assets/images/tab-icon-02.png')}}" alt="">Lunch</a></a></li>
+                                          <li><a href='#tabs-3'><img src="{{ asset('assets/images/tab-icon-03.png')}}" alt="">Dinner</a></a></li>
+                                      
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;" class="col-lg-12">
+                            <section class='tabs-content'>
+                                <article id='tabs-1'>
+                                    <div class="row">
+
+                                        @foreach($breakfast as $item)
+
+                                        <?php
+
+                            
+                                        $total_rate=DB::table('rates')->where('product_id',$item->id)
+                                        ->sum('star_value');
+
+
+                                        $total_voter=DB::table('rates')->where('product_id',$item->id)
+                                        ->count();
+
+                                        if($total_voter>0)
+                                        {
+
+                                            $per_rate=$total_rate/$total_voter;
+
+                                        }
+                                        else
+                                        {
+
+                                            $per_rate=0;
+
+
+                                        }
+
+                                        $per_rate=number_format($per_rate, 1);
+
+
+                                        $whole = floor($per_rate);      // 1
+                                        $fraction = $per_rate - $whole
+
+                                        ?>
+
+                                        @if($item->id %2 ==0)
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="left-list">
+                                                
+                                                    <div class="col-lg-12">
+                                                        <div class="tab-item">
+                                                            <img src="{{ asset('assets/images/'.$item->image)}}" alt="">
+                                                            <h4>{{ $item->name }}</h4>
+                                                            <p>{{  $item->description }}</p>
+                                                            <div class="price">
+                                                                <h6>৳{{  $item->price }}</h6>
+                                                            </div>
+                                                            <span class="product_rating">
+                                                        @for($i=1;$i<=$whole;$i++)
+
+                                                            <i class="fa fa-star "></i>
+
+                                                            @endfor
+
+                                                            @if($fraction!=0)
+
+                                                            <i class="fa fa-star-half"></i>
+
+                                                            @endif
+                                                                
+                                                                
+                                                            <span class="rating_avg">({{  $per_rate}})</span>
+                                    </span>
+                            <br>
+                                                        </div>
+                                                    </div>
+                                                
+                                                </div>      
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        @endforeach
+                                        @foreach($breakfast as $item)
+
+
+                                        <?php
+
+                            
+                                        $total_rate=DB::table('rates')->where('product_id',$item->id)
+                                        ->sum('star_value');
+
+
+                                        $total_voter=DB::table('rates')->where('product_id',$item->id)
+                                        ->count();
+
+                                        if($total_voter>0)
+                                        {
+
+                                            $per_rate=$total_rate/$total_voter;
+
+                                        }
+                                        else
+                                        {
+
+                                            $per_rate=0;
+
+
+                                        }
+
+                                        $per_rate=number_format($per_rate, 1);
+
+
+                                        $whole = floor($per_rate);      // 1
+                                        $fraction = $per_rate - $whole
+
+                                        ?>
+
+                                        @if($item->id %2 !=0)
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="right-list">
+                                                    <div class="col-lg-12">
+                                                        <div class="tab-item">
+                                                            <img src="{{ asset('assets/images/'.$item->image)}}" alt="">
+                                                            <h4>{{ $item->name }}</h4>
+                                                            <p>{{  $item->description }}</p>
+                                                            <div class="price">
+                                                                <h6>৳{{  $item->price }}</h6>
+                                                            </div>
+                                                            <span class="product_rating">
+                                                        @for($i=1;$i<=$whole;$i++)
+
+                                                            <i class="fa fa-star "></i>
+
+                                                            @endfor
+
+                                                            @if($fraction!=0)
+
+                                                            <i class="fa fa-star-half"></i>
+
+                                                            @endif
+                                                                
+                                                                
+                                                            <span class="rating_avg">({{  $per_rate}})</span>
+                                    </span>
+                            <br>
+                                                        </div>
+                                                    </div>
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        @endforeach
+                                        
+                                      
+                                    </div>
+                                </article>  
+                                <article id='tabs-2'>
+                                    <div class="row">
+                                    @foreach($lunch as $item)
+
+
+                                    <?php
+
+                            
+                                        $total_rate=DB::table('rates')->where('product_id',$item->id)
+                                        ->sum('star_value');
+
+
+                                        $total_voter=DB::table('rates')->where('product_id',$item->id)
+                                        ->count();
+
+                                        if($total_voter>0)
+                                        {
+
+                                            $per_rate=$total_rate/$total_voter;
+
+                                        }
+                                        else
+                                        {
+
+                                            $per_rate=0;
+
+
+                                        }
+
+                                        $per_rate=number_format($per_rate, 1);
+
+
+                                        $whole = floor($per_rate);      // 1
+                                        $fraction = $per_rate - $whole
+
+                                        ?>
+
+                                        @if($item->id %2 ==0)
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="left-list">
+                                                
+                                                    <div class="col-lg-12">
+                                                        <div class="tab-item">
+                                                            <img src="{{ asset('assets/images/'.$item->image)}}" alt="">
+                                                            <h4>{{ $item->name }}</h4>
+                                                            <p>{{  $item->description }}</p>
+                                                            <div class="price">
+                                                                <h6>৳{{  $item->price }}</h6>
+                                                            </div>
+                                                            <span class="product_rating">
+                                                        @for($i=1;$i<=$whole;$i++)
+
+                                                            <i class="fa fa-star "></i>
+
+                                                            @endfor
+
+                                                            @if($fraction!=0)
+
+                                                            <i class="fa fa-star-half"></i>
+
+                                                            @endif
+                                                                
+                                                                
+                                                            <span class="rating_avg">({{  $per_rate}})</span>
+                                    </span>
+                                                        </div>
+                                                    </div>
+                                                  
+                                                </div>      
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                    @endforeach
+                                    @foreach($lunch as $item)
+
+                                    <?php
+
+                            
+                                        $total_rate=DB::table('rates')->where('product_id',$item->id)
+                                        ->sum('star_value');
+
+
+                                        $total_voter=DB::table('rates')->where('product_id',$item->id)
+                                        ->count();
+
+                                        if($total_voter>0)
+                                        {
+
+                                            $per_rate=$total_rate/$total_voter;
+
+                                        }
+                                        else
+                                        {
+
+                                            $per_rate=0;
+
+
+                                        }
+
+                                        $per_rate=number_format($per_rate, 1);
+
+
+                                        $whole = floor($per_rate);      // 1
+                                        $fraction = $per_rate - $whole
+
+                                        ?>
+
+                                        @if($item->id %2 !=0)
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="right-list">
+                                                    <div class="col-lg-12">
+                                                        <div class="tab-item">
+                                                            <img src="{{ asset('assets/images/'.$item->image)}}" alt="">
+                                                            <h4>{{ $item->name }}</h4>
+                                                            <p>{{  $item->description }}</p>
+                                                            <div class="price">
+                                                                <h6>৳{{  $item->price }}</h6>
+                                                            </div>
+                                                            <span class="product_rating">
+                                                        @for($i=1;$i<=$whole;$i++)
+
+                                                            <i class="fa fa-star "></i>
+
+                                                            @endfor
+
+                                                            @if($fraction!=0)
+
+                                                            <i class="fa fa-star-half"></i>
+
+                                                            @endif
+                                                                
+                                                                
+                                                            <span class="rating_avg">({{  $per_rate}})</span>
+                                    </span>
+                            <br>
+                                                        </div>
+                                                    </div>
+                                                  
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                    @endforeach
+                                      
+                                    </div>
+                                </article>  
+                                <article id='tabs-3'>
+                                    <div class="row">
+                                    @foreach($dinner as $item)
+
+
+                                    <?php
+
+                            
+                                        $total_rate=DB::table('rates')->where('product_id',$item->id)
+                                        ->sum('star_value');
+
+
+                                        $total_voter=DB::table('rates')->where('product_id',$item->id)
+                                        ->count();
+
+                                        if($total_voter>0)
+                                        {
+
+                                            $per_rate=$total_rate/$total_voter;
+
+                                        }
+                                        else
+                                        {
+
+                                            $per_rate=0;
+
+
+                                        }
+
+                                        $per_rate=number_format($per_rate, 1);
+
+
+                                        $whole = floor($per_rate);      // 1
+                                        $fraction = $per_rate - $whole
+
+                                        ?>
+
+                                        @if($item->id %2 ==0)
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="left-list">
+                                                
+                                                    <div class="col-lg-12">
+                                                        <div class="tab-item">
+                                                            <img src="{{ asset('assets/images/'.$item->image)}}" alt="">
+                                                            <h4>{{ $item->name }}</h4>
+                                                            <p>{{  $item->description }}</p>
+                                                            <div class="price">
+                                                                <h6>৳{{  $item->price }}</h6>
+                                                            </div>
+                                                            <span class="product_rating">
+                                                        @for($i=1;$i<=$whole;$i++)
+
+                                                            <i class="fa fa-star "></i>
+
+                                                            @endfor
+
+                                                            @if($fraction!=0)
+
+                                                            <i class="fa fa-star-half"></i>
+
+                                                            @endif
+                                                                
+                                                                
+                                                            <span class="rating_avg">({{  $per_rate}})</span>
+                                    </span>
+                            <br>
+                                  
+                                                        </div>
+                                                    </div>
+                                                
+                                                </div>      
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        @endforeach
+                                        @foreach($dinner as $item)
+
+
+                                        <?php
+
+                            
+                                        $total_rate=DB::table('rates')->where('product_id',$item->id)
+                                        ->sum('star_value');
+
+
+                                        $total_voter=DB::table('rates')->where('product_id',$item->id)
+                                        ->count();
+
+                                        if($total_voter>0)
+                                        {
+
+                                            $per_rate=$total_rate/$total_voter;
+
+                                        }
+                                        else
+                                        {
+
+                                            $per_rate=0;
+
+
+                                        }
+
+                                        $per_rate=number_format($per_rate, 1);
+
+
+                                        $whole = floor($per_rate);      // 1
+                                        $fraction = $per_rate - $whole
+
+                                        ?>
+
+                                        @if($item->id %2 !=0)
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="right-list">
+                                                    <div class="col-lg-12">
+                                                        <div class="tab-item">
+                                                            <img src="{{ asset('assets/images/'.$item->image)}}" alt="">
+                                                            <h4>{{ $item->name }}</h4>
+                                                            <p>{{  $item->description }}</p>
+                                                            <div class="price">
+                                                                <h6>৳{{  $item->price }}</h6>
+                                                            </div>
+                                                            <span class="product_rating">
+                                                        @for($i=1;$i<=$whole;$i++)
+
+                                                            <i class="fa fa-star "></i>
+
+                                                            @endfor
+
+                                                            @if($fraction!=0)
+
+                                                            <i class="fa fa-star-half"></i>
+
+                                                            @endif
+                                                                
+                                                                
+                                                            <span class="rating_avg">({{  $per_rate}})</span>
+                                    </span>
+                                                        </div>
+                                                    </div>
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                    @endforeach
+                                     
+                                    </div>
+                                </article>   
+                            </section>
+                            <br>
+                            <a href="/menu"><input style="color:#fff; background-color:#FB5849; font-size:20px;"
+                            class="btn" type="submit" value="Browse All"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ***** Chefs Area Ends ***** --> 
 <!-- ***** Menu Area Starts ***** -->
 <section class="section"  id="menu">
         <div class="container">
@@ -100,78 +601,89 @@
         <div class="menu-item-carousel">
             <div class="col-lg-12">
                 <div class="owl-menu-item owl-carousel" >
+                  
+                    @foreach($menu as $product)
+                   
                     <div class="item">
-                        <div class='card card1'>
-                            <div class="price"><h6>$14</h6></div>
+
+                    <?php
+                        $img=$product->image;
+                    ?>
+                        <div class='card' style="background-image: url({{asset('assets/images/'.$img)}})"> 
+
+                            <div class="price"><h6>৳{{ $product->price }}</h6>
+                           <!-- <h4>Rate</h4> -->
+                        
+                        </div>
+                        <?php
+
+                            
+                            $total_rate=DB::table('rates')->where('product_id',$product->id)
+                            ->sum('star_value');
+
+
+                            $total_voter=DB::table('rates')->where('product_id',$product->id)
+                            ->count();
+
+                            if($total_voter>0)
+                            {
+
+                                $per_rate=$total_rate/$total_voter;
+
+                            }
+                            else
+                            {
+
+                                $per_rate=0;
+
+
+                            }
+
+                            $per_rate=number_format($per_rate, 1);
+
+
+                            $whole = floor($per_rate);      // 1
+                            $fraction = $per_rate - $whole
+
+                        ?>
                             <div class='info'>
-                              <h1 class='title'>Chocolate Cake</h1>
-                              <p class='description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sedii do eiusmod teme.</p>
+                              <h1 class='title'>{{ $product->name }}</h1>
+                              <p class='description'>{{ $product->description  }}</p>
                               <div class="main-text-button">
-                                  <div class="scroll-to-section"><a href="#reservation">Make Reservation <i class="fa fa-angle-down"></i></a></div>
+                                  <div class="scroll-to-section" >
+                                  <span class="product_rating">
+                                  @for($i=1;$i<=$whole;$i++)
+
+                                    <i class="fa fa-star "></i>
+
+                                    @endfor
+
+                                    @if($fraction!=0)
+
+                                    <i class="fa fa-star-half"></i>
+
+                                    @endif
+                                        
+                                        
+                                    <span class="rating_avg">({{  $per_rate}})</span>
+            </span>
+      <br>
+                                   <a href="/rate/{{ $product->id }}" style="color:blue;">Rate this</a>
+                                  <p>Quantity: </p>
+
+                                  <form method="post" action="{{route('cart.store',$product->id)}}">
+                                     @csrf
+                                  <input type="number" name="number" style="width:50px;" id="myNumber" value="1">
+                                    <input type="submit" class="btn btn-success" value="Add Chart">
+                                  </form>
+                                </div>
                               </div>
+                              
                             </div>
                         </div>
                     </div>
-                    <div class="item">
-                        <div class='card card2'>
-                            <div class="price"><h6>$22</h6></div>
-                            <div class='info'>
-                              <h1 class='title'>Klassy Pancake</h1>
-                              <p class='description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sedii do eiusmod teme.</p>
-                              <div class="main-text-button">
-                                  <div class="scroll-to-section"><a href="#reservation">Make Reservation <i class="fa fa-angle-down"></i></a></div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class='card card3'>
-                            <div class="price"><h6>$18</h6></div>
-                            <div class='info'>
-                              <h1 class='title'>Tall Klassy Bread</h1>
-                              <p class='description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sedii do eiusmod teme.</p>
-                              <div class="main-text-button">
-                                  <div class="scroll-to-section"><a href="#reservation">Make Reservation <i class="fa fa-angle-down"></i></a></div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class='card card4'>
-                            <div class="price"><h6>$10</h6></div>
-                            <div class='info'>
-                              <h1 class='title'>Blueberry CheeseCake</h1>
-                              <p class='description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sedii do eiusmod teme.</p>
-                              <div class="main-text-button">
-                                  <div class="scroll-to-section"><a href="#reservation">Make Reservation <i class="fa fa-angle-down"></i></a></div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class='card card5'>
-                            <div class="price"><h6>$8.50</h6></div>
-                            <div class='info'>
-                              <h1 class='title'>Klassy Cup Cake</h1>
-                              <p class='description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sedii do eiusmod teme.</p>
-                              <div class="main-text-button">
-                                  <div class="scroll-to-section"><a href="#reservation">Make Reservation <i class="fa fa-angle-down"></i></a></div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class='card card3'>
-                            <div class="price"><h6>$7.25</h6></div>
-                            <div class='info'>
-                              <h1 class='title'>Klassic Cake</h1>
-                              <p class='description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sedii do eiusmod teme.</p>
-                              <div class="main-text-button">
-                                  <div class="scroll-to-section"><a href="#reservation">Make Reservation <i class="fa fa-angle-down"></i></a></div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
+                   
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -181,6 +693,7 @@
     <!-- ***** Chefs Area Starts ***** -->
     <section class="section" id="chefs">
         <div class="container">
+          
             <div class="row">
                 <div class="col-lg-4 offset-lg-4 text-center">
                     <div class="section-heading">
@@ -189,58 +702,28 @@
                     </div>
                 </div>
             </div>
+           
             <div class="row">
+                @foreach($chefs as $chef)
                 <div class="col-lg-4">
                     <div class="chef-item">
                         <div class="thumb">
                             <div class="overlay"></div>
                             <ul class="social-icons">
-                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                <li><a href="{{ $chef->facebook_link  }}" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="{{ $chef->twitter_link  }}" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="{{ $chef->instragram_link  }}" target="_blank"><i class="fa fa-instagram"></i></a></li>
                             </ul>
-                            <img src="{{ asset('assets/images/chefs-01.jpg')}}" alt="Chef #1">
+                            <img src="{{ asset('assets/images/'.$chef->image)}}" alt="Chef #1">
                         </div>
                         <div class="down-content">
-                            <h4>Randy Walker</h4>
-                            <span>Pastry Chef</span>
+                            <h4>{{ $chef->name  }}</h4>
+                            <span>{{ $chef->job_title  }}</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
-                    <div class="chef-item">
-                        <div class="thumb">
-                            <div class="overlay"></div>
-                            <ul class="social-icons">
-                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a href="#"><i class="fa fa-behance"></i></a></li>
-                            </ul>
-                            <img src="{{ asset('assets/images/chefs-02.jpg')}}" alt="Chef #2">
-                        </div>
-                        <div class="down-content">
-                            <h4>David Martin</h4>
-                            <span>Cookie Chef</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="chef-item">
-                        <div class="thumb">
-                            <div class="overlay"></div>
-                            <ul class="social-icons">
-                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a href="#"><i class="fa fa-google"></i></a></li>
-                            </ul>
-                            <img src="{{ asset('assets/images/chefs-03.jpg')}}" alt="Chef #3">
-                        </div>
-                        <div class="down-content">
-                            <h4>Peter Perkson</h4>
-                            <span>Pancake Chef</span>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
+                
             </div>
         </div>
     </section>
@@ -281,7 +764,8 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="contact-form">
-                        <form id="contact" action="" method="get">
+                        <form id="contact" action="/reserve/confirm" method="post">
+                            @csrf
                           <div class="row">
                             <div class="col-lg-12">
                                 <h4>Table Reservation</h4>
@@ -303,7 +787,7 @@
                             </div>
                             <div class="col-md-6 col-sm-12">
                               <fieldset>
-                                <select value="number-guests" name="number-guests" id="number-guests">
+                                <select value="number-guests" name="no_guest" id="number-guests">
                                     <option value="number-guests">Number Of Guests</option>
                                     <option name="1" id="1">1</option>
                                     <option name="2" id="2">2</option>
@@ -359,280 +843,6 @@
     </section>
     <!-- ***** Reservation Area Ends ***** -->
 
-    <!-- ***** Menu Area Starts ***** -->
-    <section class="section" id="offers">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 offset-lg-4 text-center">
-                    <div class="section-heading">
-                        <h6>Midway Week</h6>
-                        <h2>This Week’s Special Meal Offers</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="row" id="tabs">
-                        <div class="col-lg-12">
-                            <div class="heading-tabs">
-                                <div class="row">
-                                    <div class="col-lg-6 offset-lg-3">
-                                        <ul>
-                                          <li><a href='#tabs-1'><img src="{{ asset('assets/images/tab-icon-01.png')}}" alt="">Breakfast</a></li>
-                                          <li><a href='#tabs-2'><img src="{{ asset('assets/images/tab-icon-02.png')}}" alt="">Lunch</a></a></li>
-                                          <li><a href='#tabs-3'><img src="{{ asset('assets/images/tab-icon-03.png')}}" alt="">Dinner</a></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="text-align:center;" class="col-lg-12">
-                            <section class='tabs-content'>
-                                <article id='tabs-1'>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="row">
-                                                <div class="left-list">
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-01.png')}}" alt="">
-                                                            <h4>Fresh Chicken Salad</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳350</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-02.png')}}" alt="">
-                                                            <h4>Orange Juice</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳90</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-03.png')}}" alt="">
-                                                            <h4>Fruit Salad</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳160</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="row">
-                                                <div class="right-list">
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-04.png')}}" alt="">
-                                                            <h4>Eggs Omelette</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳25</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-05.png')}}" alt="">
-                                                            <h4>Dollma Pire</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳190</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-06.png')}}" alt="">
-                                                            <h4>Omelette & Cheese</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳110</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>  
-                                <article id='tabs-2'>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="row">
-                                                <div class="left-list">
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-04.png')}}" alt="">
-                                                            <h4>Eggs Omelette</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳25</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-05.png')}}" alt="">
-                                                            <h4>Dollma Pire</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳190</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-06.png')}}" alt="">
-                                                            <h4>Omelette & Cheese</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳110</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="row">
-                                                <div class="right-list">
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-01.png')}}" alt="">
-                                                            <h4>Fresh Chicken Salad</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳350</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-02.png')}}" alt="">
-                                                            <h4>Orange Juice</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳150</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-03.png')}}" alt="">
-                                                            <h4>Fruit Salad</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳180</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>  
-                                <article id='tabs-3'>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="row">
-                                                <div class="left-list">
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-05.png')}}" alt="">
-                                                            <h4>Eggs Omelette</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳25</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-03.png')}}" alt="">
-                                                            <h4>Orange Juice</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳90</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-02.png')}}" alt="">
-                                                            <h4>Fruit Salad</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳160</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="row">
-                                                <div class="right-list">
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-01.png')}}" alt="">
-                                                            <h4>Fresh Chicken Salad</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳350</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-02.png')}}" alt="">
-                                                            <h4>Orange Juice</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳90</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-12">
-                                                        <div class="tab-item">
-                                                            <img src="{{ asset('assets/images/tab-item-03.png')}}" alt="">
-                                                            <h4>Fruit Salad</h4>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur koit adipiscing elit, sed do.</p>
-                                                            <div class="price">
-                                                                <h6>৳160</h6>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="row">
-                                                <div class="right-list">
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>   
-                            </section>
-                            <br>
-                            <a href="/menu"><input style="color:#fff; background-color:#FB5849; font-size:20px;"
-                            class="btn" type="submit" value="Browse All"></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- ***** Chefs Area Ends ***** --> 
+   
     
    @endsection

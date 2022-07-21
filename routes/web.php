@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BkashController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\SslCommerzPaymentController;
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,14 +27,42 @@ Route::get("/redirects",'App\Http\Controllers\HomeController@redirects');
 #Route::get("/menu",'App\Http\Controllers\MenuController@menu');
 Route::get('/menu', [MenuController::class, 'menu'])->name('menu');
 
+Route::get('/trace-my-order', [ShipmentController::class, 'trace'])->name('trace-my-order');
+
+
+Route::get('/my-order', [ShipmentController::class, 'my_order'])->name('my-order');
+
+
+Route::get("/rate/{id}", [HomeController::class, 'rate'])->name('rate');
+
+
+Route::get("/top/rated", [HomeController::class, 'top_rated'])->name('top/rated');
+
+
+
+Route::get("edit/rate/{id}", [HomeController::class, 'edit_rate'])->name('edit/rate');
+
+
+Route::get("delete/rate", [HomeController::class, 'delete_rate'])->name('delete/rate');
+
+
+
+Route::get("/rate/confirm/{value}", [HomeController::class, 'store_rate'])->name('rate.confirm');
+
+
 Route::get("/cart", [CartController::class, 'index'])->name('cart');
 
 
 Route::post('/menu/{product}', [CartController::class, 'store'])->name('cart.store');
 Route::post('/cart/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
-Route::post('/mails/shipped/{total}', [ShipmentController::class, 'send'])->name('mails.shipped');
+Route::post('/mails/shipped/{total}', [ShipmentController::class, 'place_order'])->name('mails.shipped');
+Route::post('/confirm_place_order/{total}', [ShipmentController::class, 'send'])->name('confirm_place_order');
 
 Route::post('/checkout/{total}', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/reserve/confirm', [HomeController::class, 'reservation_confirm'])->name('reserve.confirm');
+
+Route::post('/trace/confirm', [ShipmentController::class, 'trace_confirm'])->name('trace.confirm');
+
 
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {

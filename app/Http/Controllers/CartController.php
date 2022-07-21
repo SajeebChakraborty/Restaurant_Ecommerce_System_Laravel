@@ -5,6 +5,7 @@ use App\Models\Product;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class CartController extends Controller
 {
@@ -18,8 +19,15 @@ class CartController extends Controller
      */
     public function index()
     {
-        $carts = Cart::all();
-        return view("cart", compact('carts'));
+        if(!Auth::user())
+        {
+
+            return redirect()->route('login');
+
+        }
+        $carts = Cart::all()->where('user_id',Auth::user()->id)->where('product_order','no');
+        $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->sum('subtotal');
+        return view("cart", compact('carts','total_price'));
     }
 
     /**
@@ -40,19 +48,30 @@ class CartController extends Controller
      */
     public function store(Request $request, $id)
     {
+
+        if(!Auth::user())
+        {
+
+            return redirect()->route('login');
+
+        }
+        
         $product = Product::find($id);
-        $quantity = 1;
-        if (Cart::where('product_id', '=', $id)->exists()) {
-            $quant = Cart::where('product_id', '=', $id)->first()->value('quantity');
+        $quantity = $request->number;
+        if (Cart::where('product_id', '=', $id)->where('user_id',Auth::user()->id)->where('product_order','no')->exists()) {
+            $quant = Cart::where('product_id', '=', $id)->where('user_id',Auth::user()->id)->where('product_order','no')->first()->value('quantity');
             $quantity = $quantity + (int) $quant;
 
-            DB::table('carts')->where('product_id', '=', $id)->update([
+            DB::table('carts')->where('product_id', '=', $id)->where('user_id',Auth::user()->id)->where('product_order','no')->update([
                 'quantity' => $quantity,
                 'subtotal' => $quantity*$product->price
             ]);
         }else{
             DB::table('carts')->insert([
-                'product_id' => $product->id,    
+                'product_id' => $product->id, 
+                'user_id'=> Auth::user()->id,   
+                'product_order' => "no",
+                'shipping_address' => 'N/A',
                 'name' => $product->name,
                 'price' => $product->price,
                 'quantity' => $quantity,
@@ -61,7 +80,7 @@ class CartController extends Controller
         }
 
 
-        return redirect()->route('menu');
+        return back();
 
     }
 
