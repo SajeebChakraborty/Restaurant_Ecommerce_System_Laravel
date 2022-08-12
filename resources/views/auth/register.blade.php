@@ -1,12 +1,30 @@
+<title>MidwayCafe</title>
+<link rel="shortcut icon" type="image/x-icon" href="{{asset('assets/images/short.jpg') }}">
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <x-jet-authentication-card-logo />
+            <!--<x-jet-authentication-card-logo /> -->
+            <img width="100px" src="{{ asset('assets/images/logo.png')}}">
         </x-slot>
+        @if(Session::has('wrong'))
+        <br>
+    <div class="alert">
+  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+  <strong>Opps !</strong> {{Session::get('wrong')}}
+</div>
+<br>
+    @endif
+    @if(Session::has('success'))
+    <div class="success">
+  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+  <strong>Congrats !</strong> {{Session::get('success')}}
+</div>
+
+    @endif
 
         <x-jet-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register/confirm') }}">
             @csrf
 
             <div>
@@ -17,6 +35,11 @@
             <div class="mt-4">
                 <x-jet-label for="email" value="{{ __('Email') }}" />
                 <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+            </div>
+
+            <div class="mt-4">
+                <x-jet-label for="email" value="{{ __('Phone') }}" />
+                <x-jet-input id="email" class="block mt-1 w-full" type="number" name="phone" :value="old('phone')" required />
             </div>
 
             <div class="mt-4">
@@ -58,3 +81,28 @@
         </form>
     </x-jet-authentication-card>
 </x-guest-layout>
+
+
+
+<style>
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+</style>

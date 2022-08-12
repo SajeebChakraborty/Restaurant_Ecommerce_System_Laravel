@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 use DB;
 use PDF;
+use Hash;
 
 
 use Session;
@@ -51,6 +52,16 @@ class HomeController extends Controller
     }
 
     public function redirects(){
+
+
+        if(!Auth::user())
+        {
+
+            return redirect()->route('login');
+
+
+        }
+
         
         $menu=DB::table('products')->where('catagory','regular')->get();
 
@@ -76,15 +87,159 @@ class HomeController extends Controller
 
         }
 
+      
 
         $about_us=DB::table('about_us')->get();
         $banners=DB::table('banners')->get();
 
 
         $usertype= Auth::user()->usertype;
-        if($usertype=='1')
+        if($usertype!='0')
     	{
-    		return view('admin.adminhome');
+
+            $pending_order=DB::table('carts')->where('product_order','yes')->groupBy('invoice_no')->count();
+
+            $processing_order=DB::table('carts')->where('product_order','approve')->groupBy('invoice_no')->count();
+
+            $cancel_order=DB::table('carts')->where('product_order','cancel')->groupBy('invoice_no')->count();
+
+            $complete_order=DB::table('carts')->where('product_order','delivery')->groupBy('invoice_no')->count();
+
+
+            $total=DB::table('carts')->sum('subtotal');
+
+
+            $cash_on_payment=DB::table('carts')->where('pay_method','Cash On Delivery')->sum('subtotal');
+
+
+            $online_payment=$total-$cash_on_payment;
+
+
+            $customer=DB::table('users')->where('usertype','0')->count();
+
+
+            $delivery_boy=DB::table('users')->where('usertype','2')->count();
+
+
+            $user=DB::table('users')->count();
+
+
+            $admin=$user-($customer + $delivery_boy);
+
+
+            $rates=DB::table('rates')->get();
+
+            $product=array();
+
+
+            foreach($rates as $rate)
+            {
+
+
+                $product[$rate->product_id]=0;
+                $voter[$rate->product_id]=0;
+                $per_rate[$rate->product_id]=0;
+
+
+
+            }
+
+
+
+            foreach($rates as $rate)
+            {
+
+
+                $product[$rate->product_id]=$product[$rate->product_id]+ $rate->star_value;
+
+
+                $voter[$rate->product_id]=$voter[$rate->product_id]+ 1;
+
+                if($voter[$rate->product_id] > 0)
+                {
+
+                    $per_rate[$rate->product_id]=$product[$rate->product_id] / $voter[$rate->product_id];
+
+                }
+                else
+                {
+
+
+                    $per_rate[$rate->product_id]=$product[$rate->product_id];
+
+
+                }
+
+                $per_rate[$rate->product_id]=number_format($per_rate[$rate->product_id], 1);
+
+
+
+
+            }
+            
+            $copy_product=$per_rate;
+
+            arsort($per_rate);
+
+
+            // return $per_rate;
+
+
+            $product_get=array();
+
+
+            foreach($per_rate as $prod)
+            {
+
+                $index_search = array_search($prod, $copy_product);
+                
+                $product_get=DB::table('products')->where('id',$index_search)->get();
+
+
+                // return $product_get;
+
+                
+
+
+
+            }
+
+
+            $carts=DB::table('carts')->where('product_order','!=','no')->where('product_order','!=','cancel')->get();
+
+            $cart=array();
+
+
+            foreach($carts as $cart)
+            {
+
+
+                $product_cart[$cart->product_id]=0;
+               
+
+
+
+            }
+
+
+
+            foreach($carts as $cart)
+            {
+
+
+                $product_cart[$cart->product_id]=$product_cart[$cart->product_id]+ $cart->quantity;
+
+
+
+            }
+            
+            $copy_cart=$product_cart;
+
+            arsort($product_cart);
+
+
+
+    		return view('admin.dashboard',compact('pending_order','product_cart','copy_cart','total','copy_product','per_rate','product','cash_on_payment','online_payment','customer','delivery_boy','admin','processing_order','cancel_order','complete_order'));
     	}
         else{
             
@@ -399,5 +554,68 @@ class HomeController extends Controller
 
 
     }
+    public function register(Request $req)
+    {
+
+        $data=array();
+        $data['name']=$req->name;
+        $data['phone']=$req->phone;
+        $data['email']=$req->email;
+        $data['password']=Hash::make($req->password);
+
+        $email=DB::table('users')->where('email',$req->email)->count();
+
+
+        if($email > 0)
+        {
+
+            session()->flash('wrong','Email already registered !');
+            return back();
+
+
+        }
+
+        $phone=DB::table('users')->where('phone',$req->phone)->count();
+
+
+        if($phone > 0)
+        {
+
+            session()->flash('wrong','Phone already registered !');
+            return back();
+
+
+        }
+        if(strlen($req->password)<8)
+        {
+
+            session()->flash('wrong','Password lenght at least 8 words!');
+            return back();
+
+
+
+        }
+
+        if($req->password!=$req->password_confirmation)
+        {
+
+            
+            session()->flash('wrong','Password do not match !');
+            return back();
+
+
+        }
+
+        $insert=DB::table('users')->Insert($data);
+
+
+        return redirect('/redirects');
+
+
+
+
+
+    }
+  
 
 }

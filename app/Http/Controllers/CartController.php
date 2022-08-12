@@ -26,8 +26,80 @@ class CartController extends Controller
 
         }
         $carts = Cart::all()->where('user_id',Auth::user()->id)->where('product_order','no');
-        $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->sum('subtotal');
-        return view("cart", compact('carts','total_price'));
+        $carts_amount = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->count();
+        $discount_price=0;
+        $without_discount_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->sum('subtotal');
+
+        $coupon_code=NULL;
+        
+        if($carts_amount>0)
+        {
+            foreach($carts as $cart)
+            {
+
+                $coupon_code=$cart->coupon_id;
+
+
+
+            }
+
+         }
+
+         if($coupon_code!=NULL)
+         {
+
+
+            $validate=DB::table('coupons')->where('code',$coupon_code)->value('validate');
+
+            $today=date("Y-m-d");
+    
+            if($validate < $today)
+            {
+    
+
+                $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->sum('subtotal');
+
+    
+    
+    
+            }
+            else
+            {
+
+                $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->sum('subtotal');
+
+            
+                $coupon_code_price=DB::table('coupons')->where('code',$coupon_code)->value('percentage');
+    
+                $discount_price=(($total_price*$coupon_code_price)/100);
+                $discount_price=floor($discount_price);
+    
+    
+                $total_price = $total_price - $discount_price;
+
+
+
+            }
+
+
+
+          
+
+
+         }
+         else
+         {
+
+            $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->sum('subtotal');
+
+
+         }
+         $extra_charge=DB::table('charges')->get();
+         $total_extra_charge=DB::table('charges')->sum('price');
+
+
+       
+        return view("cart", compact('carts','total_price','discount_price','without_discount_price','extra_charge','total_extra_charge'));
     }
 
     /**
@@ -59,7 +131,9 @@ class CartController extends Controller
         $product = Product::find($id);
         $quantity = $request->number;
         if (Cart::where('product_id', '=', $id)->where('user_id',Auth::user()->id)->where('product_order','no')->exists()) {
-            $quant = Cart::where('product_id', '=', $id)->where('user_id',Auth::user()->id)->where('product_order','no')->first()->value('quantity');
+            $quant = DB::table('carts')->where('product_id', '=', $id)->where('user_id',Auth::user()->id)->where('product_order','no')->value('quantity');
+            
+          
             $quantity = $quantity + (int) $quant;
 
             DB::table('carts')->where('product_id', '=', $id)->where('user_id',Auth::user()->id)->where('product_order','no')->update([

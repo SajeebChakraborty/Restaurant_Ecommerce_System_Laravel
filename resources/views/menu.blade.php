@@ -78,8 +78,13 @@
             
             <br>
             <br>
+                       
+                        @if($product->available=="Stock")
                         <input type="number" name="number" style="width:50px;" id="myNumber" value="1">
                         <button class="btn btn-success">Add to Cart</button>
+                        @endif
+                        @if($product->available!="Stock") <p class="btn btn-danger">Out of Stock</p>
+                        @endif
                     </form>
                 </td>
             </tr>

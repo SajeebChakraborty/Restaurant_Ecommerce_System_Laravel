@@ -70,14 +70,12 @@
   		</div>
   		<div class="row">
   	    	<div class="span3">
-  		        <strong>Phone:</strong>+91-124-111111
+  		        <strong>Phone:</strong>(+880) 1824072334
   	    	</div>
   	    	<div class="span3">
-  		        <strong>Email:</strong> <a href="web@webivorous.com">web@webivorous.com</a>
+  		        <strong>Email:</strong> <a href="sajeebchakraborty.cse2000@gmail.com">sajeebchakraborty.cse2000@gmail.com</a>
   	    	</div>
-  	    	<div class="span3">
-  		        <strong>Website:</strong> <a href="http://webivorous.com">http://webivorous.com</a>
-  	    	</div>
+  	    
   		</div>
     </div>
 

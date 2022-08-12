@@ -1432,15 +1432,16 @@ offers
 
 #menu .price h4 {
   position: absolute;
-  width: 70px;
+  width: 150px;
   height: 70px;
-  background-color: #4b3837;
+  background-color: #d15400;
   font-size: 20px;
   font-weight: 700;
   color: #fff;
   border-radius: 3px;
   text-align: center;
-  margin-left: 170px ;
+  margin-left: 40px ;
+  margin-top:180px;
   line-height: 70px;
 }
 
@@ -1464,7 +1465,7 @@ offers
   position: absolute;
   top: 15px;
   right: 0;
-  width: 70px;
+  width: 150px;
   height: 70px;
   background-color: #1a1111;
   display: inline-block;

@@ -15,6 +15,7 @@
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.5",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "symfony/http-client": "^5.4",
         "symfony/mailgun-mailer": "^5.4",
         "symfony/postmark-mailer": "^5.4"

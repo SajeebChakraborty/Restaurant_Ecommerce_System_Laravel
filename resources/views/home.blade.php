@@ -20,27 +20,18 @@
                 <div class="col-lg-8">
                     <div class="main-banner header-text">
                         <div class="Modern-Slider">
+
+                        @foreach($banners as $banner)
                           <!-- Item -->
                           <div class="item">
                             <div class="img-fill">
-                                <img src="{{ asset('assets/images/slide-01.jpg')}}" alt="">
+                                <img src="{{ asset('assets/images/'.$banner->image)}}" alt="">
                             </div>
                           </div>
+
+                        @endforeach
                           <!-- // Item -->
-                          <!-- Item -->
-                          <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/images/slide-02.jpg')}}" alt="">
-                            </div>
-                          </div>
-                          <!-- // Item -->
-                          <!-- Item -->
-                          <div class="item">
-                            <div class="img-fill">
-                                <img src="{{ asset('assets/images/slide-03.jpg')}}" alt="">
-                            </div>
-                          </div>
-                          <!-- // Item -->
+                         
                         </div>
                     </div>
                 </div>
@@ -612,7 +603,10 @@
                         <div class='card' style="background-image: url({{asset('assets/images/'.$img)}})"> 
 
                             <div class="price"><h6>৳{{ $product->price }}</h6>
-                           <!-- <h4>Rate</h4> -->
+                            @if($product->available!="Stock")
+                            <h4 style="">Out Of Stock</h4> 
+
+                            @endif
                         
                         </div>
                         <?php
@@ -670,12 +664,21 @@
       <br>
                                    <a href="/rate/{{ $product->id }}" style="color:blue;">Rate this</a>
                                   <p>Quantity: </p>
-
+                                @if($product->available=="Stock")
                                   <form method="post" action="{{route('cart.store',$product->id)}}">
                                      @csrf
                                   <input type="number" name="number" style="width:50px;" id="myNumber" value="1">
                                     <input type="submit" class="btn btn-success" value="Add Chart">
                                   </form>
+                                @endif
+
+                                @if($product->available!="Stock")
+                                  <form method="post" action="{{route('cart.store',$product->id)}}">
+                                     @csrf
+                                  <input type="number" name="number" style="width:50px;" id="myNumber" value="1">
+                                    <input type="submit" class="btn btn-success" disabled value="Add Chart">
+                                  </form>
+                                @endif
                                 </div>
                               </div>
                               

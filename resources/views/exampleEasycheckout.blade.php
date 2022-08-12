@@ -7,6 +7,8 @@
     <meta name="author" content="SSLCommerz">
     <title>MidwayCafe</title>
 
+
+
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -98,17 +100,19 @@
                     </div>
                 </div>
                 <hr class="mb-4">
+                <p id="add" style="display:none;"></p>
               
                 <hr class="mb-4">
                 <button class="btn btn-primary btn-lg btn-block" id="sslczPayBtn"
                         token="if you have any token validation"
                         postdata="your javascript arrays or objects which requires in backend"
                         order="If you already have the transaction generated for current order"
-                        endpoint="{{ url('/pay-via-ajax') }}"> Pay Now
+                        endpoint="{{ url('/pay-via-ajax') }}" onclick="myFunction()"> Pay Now
                 </button>
             </form>
         </div>
     </div>
+ 
 
    
 </div>
@@ -127,17 +131,68 @@
 <!-- If you want to use the popup integration, -->
 <script>
     var obj = {};
-    obj.cus_name = $('#customer_name').val();
-    obj.cus_phone = $('#mobile').val();
-    obj.cus_email = $('#email').val();
-    obj.cus_addr1 = $('#address').val();
-    obj.amount = $('#total_amount').val();
+   // obj.cus_name = $('#customer_name').val();
+   // obj.cus_phone = $('#mobile').val();
+   obj.cus_email = $('#address').val();
+   
+  //  obj.amount = $('#total_amount').val();
+
+
+ 
+
+        console.log(obj);
+
+    $("sslczPayBtn").click(function(){
+        $.post("demo_test_post.asp",
+    {
+        name: "Donald Duck",
+        city: "Duckburg"
+    },
+    function(data, status){
+    //alert("Data: " + data + "\nStatus: " + status);
+    console.log(data);
+  });
+});
+
+      
+
+        function myFunction() {
+                 var addr = document.getElementById("address").value;
+               // document.getElementById("add").innerHTML = addr;
+
+            
+               <?php    
+           /*
+      
+              //$address="<script>document.write(addr) </script>";
+
+                //return $address;
+
+                $address="Bangladesh";
+
+                Session::put('sub_address', $address); 
+                
+                  */
+                ?>
+                 
+             
+              
+
+                //window.location.replace("http://www.w3schools.com target="_blank"");
+        }
+
+  
 
    
 
     $('#sslczPayBtn').prop('postdata', obj);
 
     (function (window, document) {
+
+
+       
+
+       // obj.cus_addr1 = document.getElementById("address").value;
         var loader = function () {
             var script = document.createElement("script"), tag = document.getElementsByTagName("script")[0];
             // script.src = "https://seamless-epay.sslcommerz.com/embed.min.js?" + Math.random().toString(36).substring(7); // USE THIS FOR LIVE
