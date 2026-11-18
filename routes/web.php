@@ -117,6 +117,8 @@ Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
 
 // Admin start Route
 
+Route::middleware(['admin'])->group(function () {
+
 
 Route::get('/admin/home', [AdminController::class, 'home'])->name('/admin/home');
 
@@ -195,3 +197,4 @@ Route::get('/admin/charge/edit/{id}', [AdminController::class, 'edit_charge'])->
 Route::post('/charge-edit-process/{id}', [AdminController::class, 'edit_charge_process'])->name('/charge-edit-process');
 Route::get('/customize/edit', [AdminController::class, 'customize_edit'])->name('/customize/edit');
 Route::post('/customize_edit_process', [AdminController::class, 'edit_customize_process'])->name('/customize_edit_process');
+});
